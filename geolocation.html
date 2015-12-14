@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<body>
+<center>
+<p>Coba Geolocation</p>
+<button onclick="getLocation()">Klik</button>
+<p id="totslah"></p>
+</center>
+<script>
+var x = document.getElementById("totslah");
+
+function getLocation() {
+	if (navigator.geolocation) 
+	{
+ 	       navigator.geolocation.getCurrentPosition(showPosition);
+    	} 
+	else { 
+	        x.innerHTML = "failed";
+	}
+}
+
+function showPosition(position) {
+    x.innerHTML = "Lats: " + position.coords.latitude + 
+    "<br>Longs: " + position.coords.longitude;	
+}
+</script>
+
+</body>
+</html>
+
