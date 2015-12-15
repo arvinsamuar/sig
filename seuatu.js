@@ -7,7 +7,7 @@ function initialize()
 	var myCenter=new google.maps.LatLng(-6.3648006,106.8290333,17);	
 
 	var mapProp = { center:new google.maps.LatLng(-6.3648006,106.8290333,17),
-					zoom:9,
+					zoom:10,
 	  				mapTypeId:google.maps.MapTypeId.TERRAIN
 	  			};
 	var map = new google.maps.Map(document.getElementById("maps"),mapProp);
@@ -16,19 +16,29 @@ function initialize()
 					position:myCenter,
 				});
 
+	var request = {
+   	 location: myCenter	,
+   	 radius: '1000',
+   	 query: 'bimbel'
+  	};
+
+	  service = new google.maps.places.PlacesService(map);
+	  service.textSearch(request, callback);
+
 	marker.setMap(map);
 
 	// Create the search box and link it to the UI element.
-	//var input = /** @type {HTMLInputElement} */(
-	//document.getElementById('pac-input'));
-	//map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+	var input = /** @type {HTMLInputElement} */(
+	document.getElementById('pac-input'));
+	map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
-	//var searchBox = new google.maps.places.SearchBox(('bimbel'));
-    var markers = [];
+	var searchBox = new google.maps.places.SearchBox(
+    /** @type {HTMLInputElement} */(input));
+	var markers = [];
 	// Listen for the event fired when the user selects an item from the
 	// pick list. Retrieve the matching places for that item.
-	//google.maps.event.addListener(searchBox, 'places_changed', function() {
-  		var places = searchBox.getPlaces(); /* array */
+	google.maps.event.addListener(searchBox, 'places_changed', function() {
+  		var places = searchBox.getPlaces();
 
 		if (places.length == 0) {
 			return;
@@ -64,7 +74,7 @@ function initialize()
 	    }
 
 	    map.fitBounds(bounds);
- 	//});
+ 	});
 
  	// Bias the SearchBox results towards places that are within the bounds of the
   	// current map's viewport.
@@ -92,6 +102,15 @@ function initialize()
 	  		map.setCenter(marker.getPosition());
 	  	}
 	);
+}
+
+function callback(results, status) {
+  if (status == google.maps.places.PlacesServiceStatus.OK) {
+    	for (var i = 0; i < results.length; i++) {
+      		var place = results[i];
+      		createMarker(results[i]);
+    	}
+	}
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
